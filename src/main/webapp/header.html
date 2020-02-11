@@ -1,0 +1,141 @@
+<nav class="navbar navbar-fixed-top navbar-default navbar-transparent">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html">CRXC</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav" id="menu">
+                <li><a href="index.html" class="active">首页 <span class="sr-only">(current)</span></a></li>
+                <li><a href="resume.html#person">个人简介</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">文章 <span class="caret"></span></a>
+                    <ul class="dropdown-menu" style="width: auto;">
+                        <li><a href="articleList.html?all=true">全部</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="articleList.html?theme=blog">博客</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="articleList.html?theme=life">生活</a></li>
+                    </ul>
+                </li>
+                <li><a href="guestbook.html">留言</a></li>
+            </ul>
+            <div class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search" id="searchText">
+                </div>
+                <button class="btn btn-default" id="searchButton" onclick="clickSearch()">搜索</button>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a data-target="#login" data-toggle="modal">登录</a></li>
+            </ul>
+        </div><!-- /.nav-collapse -->
+    </div><!-- /.container -->
+</nav><!-- /.navbar -->
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                <h4 class="modal-title" id="myModalLabel">登录</h4>
+            </div>
+            <div class="modal-body" onkeyup="enterKey(event)">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="username" class="col-sm-2 control-label">邮箱</label>
+                        <div class="col-sm-10">
+                            <input type="email" class="form-control" id="username" name="username" placeholder="请输入邮箱账号">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="col-sm-2 control-label">密码</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="请输入密码">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" id="remember"> 记住我
+                                </label>
+                            </div>
+                            <div style="font-size: 12px;color: red;" id="msg"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="button" class="btn btn-default" onclick="login()">登录</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script src="/static/public/js/jquery.cookie.js"></script>
+<script>
+    function login() {
+        var email = $("#username").val();
+        var pwd = $("#password").val();
+        if(email == "" || pwd == ""){
+            alert("用户名或密码不能为空");
+            return;
+        }
+
+        var list = {
+            'email':email,
+            'password':pwd
+        }
+        //请求 登录
+        $.ajax({
+            //请求方式
+            type : "POST",
+            //请求的媒体类型
+            contentType: "application/json;charset=UTF-8",
+            //请求地址
+            url : window.location.protocol+"//"+window.location.host+"/user/login",
+            data:JSON.stringify(list),
+            dataType: "json",
+            //请求成功
+            success : function(result) {
+                console.log(result)
+                if(result.message == 'error'){
+                    console.log("登录失败");
+                    $("#msg").text("用户名或密码错误");
+                    return;
+                }
+                /**
+                 * 设置 cookie token 20分钟过期
+                 */
+                localStorage.setItem("token",result.token);
+                var expiresDate= new Date();
+                expiresDate.setTime(expiresDate.getTime() + (20*60*1000));
+                $.cookie("token",result.token,{expires:expiresDate,path:'/'});
+
+                //登陆成功 跳转
+                window.location.href = "./back/main.html";
+            },
+            //请求失败，包含具体的错误信息
+            error : function(e){
+                console.log(e.status);
+                console.log(e.responseText);
+            }
+        });
+    }
+    function enterKey(event) {
+        if(event.keyCode == "13"){
+            login()
+        }
+    }
+</script>

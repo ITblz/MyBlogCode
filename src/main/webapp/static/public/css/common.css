@@ -1,0 +1,42 @@
+body {
+    background-image: url("../images/bg1.jpg");
+    background-position: center 0;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -o-background-size: cover;
+    -moz-background-size: cover;
+    -ms-background-size: cover;
+    opacity: 0.8;
+}
+/*多行省略*/
+.omit-lines{
+    overflow:hidden;/*超出隐藏*/
+    text-overflow:ellipsis;/*文本溢出时显示省略标记*/
+    display:-webkit-box;/*设置弹性盒模型*/
+    -webkit-line-clamp:5;/*文本占的行数,如果要设置2行加...则设置为2*/
+    -webkit-box-orient:vertical;/*子代元素垂直显示*/
+}
+/*单行省略*/
+.omit-line{
+    overflow: hidden;
+    text-overflow:ellipsis;/*文本溢出显示省略号*/
+    white-space: nowrap;/*文本不换行*/
+}
+.toggle_right{
+    width: 30px;
+    height: 30px;
+    position: fixed;
+    bottom:50px;
+    right: 30px;
+    border:1px solid #888;
+}
+.back_to_top{
+    width: 30px;
+    height: 30px;
+    position: fixed;
+    bottom:10px;
+    right: 30px;
+    border:1px solid #888;
+}

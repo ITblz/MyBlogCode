@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>修改密码</title>
+</head>
+<body>
+<div class="container-fluid panel-body" style="padding-bottom:0px">
+    <div class="form-horizontal validation-form">
+        <input type="hidden" name="userId">
+        <div class="panel panel-default" style="margin-bottom: 0px">
+            <h4 class="panel panel-heading h4font" >
+                修改密码<small>（＊星号是必填项）</small>
+            </h4>
+
+            <div class="panel-body">
+
+                <div class="form-group">
+                    <label class="col-xs-3 col-sm-3 control-label"><span style="color: red;font-weight: bold">＊</span>当前密码</label>
+                    <div class="col-xs-5 col-sm-5">
+                        <input type="password" class="form-control" id="password" placeholder="">
+                    </div>
+                    <label class="control-label">（输入当前用户密码）</label>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-3 col-sm-3 control-label"><span style="color: red;font-weight: bold">＊</span>新密码</label>
+                    <div class="col-xs-5 col-sm-5">
+                        <input type="password" class="form-control" id="newPassword" placeholder=""/>
+                    </div>
+                    <label class="control-label">（密码长度至少6位）</label>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-3 col-sm-3 control-label"><span style="color: red;font-weight: bold">＊</span>确认密码</label>
+                    <div class="col-xs-5 col-sm-5">
+                        <input type="password" class="form-control" id="newPassword2" placeholder="">
+                    </div>
+                    <label class="control-label">（确认新密码）</label>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="form-group">
+            <div class="col-sm-offset-5 col-sm-1">
+                <button type="submit" class="btn btn-primary" name="changePwd" onclick="">修 改</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('button[name="changePwd"]').click(function (e) {
+            var p = $('#password')
+            var np = $('#newPassword')
+            var np2 = $('#newPassword2')
+
+            var password = p.val();
+            var npassword = np.val();
+            var npassword2 = np2.val();
+
+            if (password == "" || npassword == "" || npassword2 == ""){
+                alert("输入不能为空");
+                return;
+            }
+            if (npassword != npassword2){
+                alert("两次新密码输入不一致");
+                return;
+            }
+            var list = {
+                "oldPwd":password,
+                "newPwd":npassword,
+                "token":localStorage.getItem("token")
+            }
+            var urlpre = window.location.protocol+"//"+window.location.host+"/";
+                $.ajax ({
+                    url: urlpre+"user/changePwd.do",
+                    type: "POST",
+
+                    data: JSON.stringify(list),
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function(result){
+                        alert(result.msg)
+                        if (result.status == "success"){
+                            localStorage.removeItem("token")
+                            $.cookie("token",null,{path:"/"})
+                            window.location.href = urlpre+"index.html";
+                        }
+                    }});
+        });
+    })
+</script>
+</body>
+</html>

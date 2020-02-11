@@ -1,0 +1,53 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+    <!-- 配置控制层扫描 ，此处的Controller是接口-->
+    <context:component-scan base-package="com.blz">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+    <!-- 开启SpringMVC高级功能 -->
+    <mvc:annotation-driven/>
+    <!-- 解析SpringMVC无法解析的 -->
+    <mvc:default-servlet-handler/>
+    <!--过滤静态资源-->
+    <mvc:resources mapping="/static/**" location="/static/"/>
+    <mvc:resources mapping="/upload/**" location="/upload/"/>
+    <!--配置视图解析器对象-->
+    <bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/back/"/>
+        <!--后缀名-->
+        <property name="suffix" value=".jsp"/>
+    </bean>
+    <!--配置文件解析器-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--文件大小10*1024*1024-->
+        <property name="maxUploadSize" value="20180000"/>
+    </bean>
+
+    <!-- springmvc提供的简单异常处理器 -->
+    <!--<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">-->
+        <!--&lt;!&ndash; 定义默认的异常处理页面 &ndash;&gt;-->
+        <!--<property name="defaultErrorView" value="error"/>-->
+        <!--&lt;!&ndash; 定义异常处理页面用来获取异常信息的变量名，也可不定义，默认名为exception &ndash;&gt;-->
+        <!--<property name="exceptionAttribute" value="msg"/>-->
+        <!--&lt;!&ndash; 定义需要特殊处理的异常，这是重要点 &ndash;&gt;-->
+        <!--&lt;!&ndash;<property name="exceptionMappings">&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;<props>&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;<prop key="ssm.exception.CustomException">/WEB-INF/jsp/custom_error.jsp</prop>&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;</props>&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;</property>&ndash;&gt;-->
+    <!--</bean>-->
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!-- 进行拦截：/**表示拦截所有controller -->
+            <mvc:mapping path="/**/*.do" />
+            <mvc:mapping path="/back/*.html"/>
+            <bean class="com.blz.Interceptor.TokenInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
+</beans>

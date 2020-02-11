@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>文章详情</title>
+    <link rel="shortcut icon" href="static/public/images/icon.png" type="image/x-icon" />
+    <link rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="static/bootstrap/css/offcanvas.css" />
+    <link rel="stylesheet" href="static/editor/css/editormd.min.css" />
+
+    <link rel="stylesheet" href="static/public/css/common.css">
+
+    <link rel="stylesheet" href="static/jqueryEmoji/lib/css/jquery.mCustomScrollbar.min.css"/>
+    <link rel="stylesheet" href="static/jqueryEmoji/dist/css/jquery.emoji.css"/>
+
+    <script src="static/public/js/jquery.min.js"></script>
+    <script src="static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="static/bootstrap/js/offcanvas.js"></script>
+
+    <script src="static/jqueryEmoji/lib/script/jquery.mousewheel-3.0.6.min.js"></script>
+    <script src="static/jqueryEmoji/lib/script/jquery.mCustomScrollbar.min.js"></script>
+    <script src="static/jqueryEmoji/dist/js/jquery.emoji.min.js"></script>
+
+    <script src="static/public/js/common.js"></script>
+    <script src="static/public/js/init.js"></script>
+    <script src="static/public/js/articleDetail.js"></script>
+</head>
+<body>
+<header id="header"></header>
+<div class="container" style="color: white;">
+    <div class="col-sm-8 blog-header text-center" style="padding: 0 0 5px 20px;">
+        <h1 class="blog-title" id="articleTitle" >文章标题</h1>
+
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="blog-description" id="articleAuthor" style="padding-right: 15px;">灿若星辰</span>
+
+        <i class="fa fa-calendar-o" aria-hidden="true"></i>
+        <span class="blog-description" id="articleDate" style="padding-right: 15px;">未找到数据</span>
+        <span class="blog-description">
+            <i class="fa fa-eye" aria-hidden="true"></i>&nbsp;
+            <span id="articleViews"></span>
+        </span>
+    </div>
+
+    <div class="row row-offcanvas row-offcanvas-right">
+
+        <div class="col-sm-9 blog-main">
+
+            <div class="blog-post" id="test-editormd">
+                <textarea id="articleContent">###未找到数据</textarea>
+            </div><!-- /.blog-post -->
+
+            <script src="static/editor/lib/marked.min.js"></script>
+            <script src="static/editor/lib/prettify.min.js"></script>
+            <script src="static/editor/lib/raphael.min.js"></script>
+            <script src="static/editor/lib/underscore.min.js"></script>
+            <script src="static/editor/lib/sequence-diagram.min.js"></script>
+            <script src="static/editor/lib/flowchart.min.js"></script>
+            <script src="static/editor/lib/jquery.flowchart.min.js"></script>
+            <script src="static/editor/js/editormd.min.js"></script>
+            <script>
+                testEditor = editormd.markdownToHTML("test-editormd", {
+                    htmlDecode      : "style,script,iframe",  // you can filter tags decode
+                    emoji           : true,
+                    taskList        : true,
+                    tex             : true,  // 默认不解析
+                    flowChart       : true,  // 默认不解析
+                    sequenceDiagram : true,  // 默认不解析
+                });
+            </script>
+            <!-- 给文章点赞 -->
+            <div class="row text-right" style="margin: 20px 5px 20px 5px;border-bottom: 1px solid darkgray;">
+                <span style="padding-right: 80px;cursor: pointer;padding-bottom: 10px;color: red;"  >
+                    <i class="fa fa-heart-o" aria-hidden="true" onclick="clickArticleLike(event)">喜欢<span id="articleLikeCount">xx</span></i>&nbsp;
+
+                </span>
+            </div>
+
+            <!--评论模块 -->
+            <!--评论表单-->
+            <div class="row" style="margin-bottom: 20px;">
+                <div class="form">
+                    <div class="col-md-3 col-sm-12 form-group">
+                        <input type="text" class="form-control" placeholder="君の名は" id="comment-name">
+                    </div>
+                    <div class="col-md-3 col-sm-12 form-group">
+                        <input type="email" class="form-control" placeholder="你的邮箱" id="comment-email">
+                    </div>
+                    <div class="col-md-12 col-sm-12 form-group" >
+                        <div class="form-control" contenteditable="true" id="comment-content" style="height: 91px;">
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-12 text-right">
+                        <button id="btnEmoji" class="btn btn-sm btn-default pull-left">表情:)</button>
+                        <button type="button" class="btn btn-default" onclick="ajaxInsertComment()">发表</button>
+                    </div>
+                </div>
+                <script src="static/jqueryEmoji/lib/script/highlight.pack.js"></script>
+                <script>hljs.initHighlightingOnLoad();</script>
+                <script src="static/jqueryEmoji/lib/script/jquery.mousewheel-3.0.6.min.js"></script>
+                <script src="static/jqueryEmoji/lib/script/jquery.mCustomScrollbar.min.js"></script>
+                <script src="static/jqueryEmoji/src/js/jquery.emoji.js"></script>
+                <script>
+                    $("#btnEmoji").click(function () {
+                        $("#comment-content").emoji({
+                            button: "#btnEmoji",
+                            showTab: false,
+                            animation: 'slide',
+                            position: 'bttomRight',
+                            icons: [{
+                                name: "QQ表情",
+                                path: window.location.protocol+"//"+window.location.host+"/static/jqueryEmoji/dist/img/qq/",
+                                maxNum: 91,
+                                excludeNums: [41, 45, 54],
+                                file: ".gif"
+                            }]
+                        });
+                    })
+
+
+                </script>
+            </div>
+            <!-- 评论展示 -->
+            <div class="row" style="margin-left: 5px;margin-right: 5px;border-bottom: 1px solid #33FFFF;padding: 0px;">
+                <span class="col-sm-6 text-left" style="padding-left: 0;">全部评论&nbsp;|&nbsp;<span id="articleCommentCount">xxx</span></span>
+                <!--<span class="col-sm-6 text-right" style="padding-right: 0;"><a href="#">只看作者</a></span>-->
+            </div>
+            <div id="showComments" style="margin-top: 15px;">
+                <!--<div class="media">
+                    <div class="media-left">
+                        <img class="img-circle media-object" src="static/public/images/myHeadPhoto.jpg" style="width: 80px;height: 80px;" alt="...">
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">Media heading</h4>
+                        <h6 style="margin-top: 10px;">日期</h6>
+                        <p style="margin-top: 10px;">评论， 就把那你就您那里； 背景框U币能力玻璃你看比遍历丢包不等你；了你的皮兄弟你的；看电脑；没电； 电</p>
+                    </div>
+                    <div class="media-bottom text-right" style="padding-right: 15px">
+                        <em>点赞</em>&nbsp;&nbsp;<em>回复</em>
+                    </div>
+                </div>-->
+            </div>
+        </div><!-- /.blog-main -->
+
+        <div class="col-sm-3 sidebar-offcanvas blog-sidebar">
+            <!--<div class="sidebar-module sidebar-module-inset">
+                <h4>关于</h4>
+                <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
+            </div>-->
+            <div class="panel panel-primary" style="opacity:0.5;">
+                <div class="panel-body">
+                    <div class="thumbnail">
+                        <img src="static/public/images/myHeadPhoto.jpg" alt="...">
+                        <div class="caption text-center">
+                            <h3>灿若星辰</h3>
+                            <p>行到水穷处，坐看云起时</p>
+                            <div class="row">
+                                <div class="col-xs-4 col-sm-4">
+                                    <span id="articleTotalText">xxx</span><br>
+                                    <span>文章</span>
+                                </div>
+                                <div class="col-xs-4 col-sm-4">
+                                    <span id="visitorTotalText">xxx</span><br>
+                                    <span>访问</span>
+                                </div>
+                                <div class="col-xs-4 col-sm-4">
+                                    <span id="commentTotalText">xxx</span><br>
+                                    <span>评论</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-success">
+                <div class="panel-heading">搜索</div>
+                <div class="panel-body">
+                    <input type="text" placeholder="请输入关键字" class="form-control" id="searchText2">
+                </div>
+            </div>
+
+            <div class="panel panel-warning">
+                <div class="panel-heading">类别</div>
+                <div class="panel-body" id="sorts">
+                    <!--<label class="col-sm-6 label"><a href="articleList.html?sort=">分类集1</a></label>-->
+                </div>
+            </div>
+
+            <div class="panel panel-info">
+                <div class="panel-heading">标签</div>
+                <div class="panel-body">
+                    <div class="row" id="tags">
+                        <!--<label class="label col-md-4"><a href="#">#标签1</a></label>-->
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-module">
+                <div class="panel panel-success">
+                    <div class="panel-heading">归档</div>
+                    <div class="panel-body">
+                        <ol class="list-unstyled">
+                            <li><a href="#">2019-12</a></li>
+                            <li><a href="#">2019-11</a></li>
+                            <li><a href="#">2019-10</a></li>
+                            <li><a href="#">2019-09</a></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-module">
+                <div class="panel panel-info">
+                    <div class="panel-heading">社交账号</div>
+                    <div class="panel-body">
+                        <ol class="list-unstyled">
+                        <li><a href="https://github.com/ITblz">GitHub</a></li>
+                        <li><a href="https://weibo.com/u/5637297613?topnav=1&wvr=6&topsug=1&is_all=1">WeiBo</a></li>
+                        <li><a href="https://me.csdn.net/Blz624613442">My CSDN</a></li>
+                    </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-module">
+                <div class="panel panel-warning">
+                    <div class="panel-heading">友情链接</div>
+                    <div class="panel-body">
+                        <ol class="list-unstyled">
+                        <li><a href="https://www.bootcss.com/" target="_blank">Bootstrap</a></li>
+                        <li><a href="http://jquery.cuishifeng.cn/" target="_blank">jQuery中文在线手册</a></li>
+                        <li><a href="https://pandao.github.io/editor.md/" target="_blank">Editor.md</a></li>
+                    </ol>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.blog-sidebar -->
+
+    </div><!-- /.row -->
+
+</div><!-- /.container -->
+<hr>
+<footer id="footer" style="padding: 0 0;"></footer>
+<p class="pull-right visible-xs">
+    <button type="button" class="toggle_right btn btn-xs" data-toggle="offcanvas">
+        <span class="glyphicon glyphicon-menu-right"></span>
+    </button>
+</p>
+<button class="back_to_top btn btn-xs" id="goTopBtn">
+    <span class="glyphicon glyphicon-menu-up"></span>
+</button>
+<script src="static/public/js/goTop.js"></script>
+</body>
+</html>

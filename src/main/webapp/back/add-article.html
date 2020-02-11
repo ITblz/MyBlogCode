@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel='stylesheet' href='/static/editor/css/editormd.css'>
+
+    <title>撰写新文章</title>
+</head>
+<body class="">
+<br/>
+<div class="container-fluid">
+    <div>
+        <div class="input-group form-group" >
+            <span class="input-group-addon" id="basic-addon1">Title</span>
+            <input type="text" class="form-control" placeholder="请输入文章标题"
+                   aria-describedby="basic-addon1" id="input-title"/>
+            <span class="input-group-btn">
+                <button class="btn btn-info btn-default" style="margin-left:3px" id="btn_article_update">发布文章</button>
+            </span>
+        </div>
+
+        <div class="input-group form-group">
+            <span class="input-group-addon" id="basic-addon2">作者</span>
+            <input type="text" class="form-control" placeholder="请输入文章作者名字"
+                   aria-describedby="basic-addon2" id="input-author"/>
+        </div>
+
+
+
+            <div class="input-group form-group">
+                <span class="input-group-addon" id="x">主题</span>
+                <select class="form-control" style="width: auto;" id="select-themes" aria-describedby="x"></select>
+            </div>
+
+            <div class="input-group form-group">
+                <span class="input-group-addon" id="xx">分类</span>
+                <select class="form-control" style="width: auto;" id="select-sorts" aria-describedby="xx"></select>
+            </div>
+
+
+
+        <div class="input-group form-group">
+            <span class="input-group-addon" id="basic-addon4">标签</span>
+            <input type="text" class="form-control" placeholder="请输入文章标签，多个标签请使用英文逗号隔开...."
+                   aria-describedby="basic-addon4" id="input-tags"/>
+        </div>
+
+
+        <div id="test-editor">
+            <textarea style="display:none;" autofocus="autofocus"></textarea>
+        </div>
+        <script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+        <script src="/static/editor/js/editormd.min.js" txype="text/javascript"></script>
+        <script src="/static/back/backjs/utils.js"></script>
+        <script src="/static/back/backjs/add-article.js"></script>
+        <script type="text/javascript">
+            $(function () {
+                ajaxGetAllThemes();
+                ajaxGetAllSorts();
+                initAddArticle();
+            });
+        </script>
+    </div>
+</div>
+
+</body>
+</html>
